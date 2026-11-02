@@ -384,6 +384,41 @@
   .build-link:hover svg{ transform:translate(2px,-2px); }
   .build-note{ font-size:12.5px; font-weight:600; color:var(--text-3); }
 
+  /* ---------- Feature build card (multi-frame crossfade) ---------- */
+  .build-card--feature{ grid-column:1 / -1; display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); }
+  .build-card--feature .build-media{ aspect-ratio:auto; min-width:0; min-height:380px; height:100%; background:#0f172a0d; }  /* 비율 고정 + height:100%는 가로가 늘어나 옆 글자를 가리므로 쓰지 않는다 */
+  .build-card--feature .build-media img{ object-position:top left; animation:qFade 20s ease-in-out infinite both; animation-delay:calc(var(--i) * 4s); }
+  .build-card--feature .build-media img:nth-child(1){ --i:0; }
+  .build-card--feature .build-media img:nth-child(2){ --i:1; }
+  .build-card--feature .build-media img:nth-child(3){ --i:2; }
+  .build-card--feature .build-media img:nth-child(4){ --i:3; }
+  .build-card--feature .build-media img:nth-child(5){ --i:4; }
+  .build-card--feature:hover .build-media img{ animation-play-state:paused; transform:none; }
+  @keyframes qFade{ 0%{opacity:0;} 3%{opacity:1;} 20%{opacity:1;} 24%{opacity:0;} 100%{opacity:0;} }
+  .q-steps{ position:absolute; left:10px; right:10px; bottom:10px; display:flex; gap:6px; flex-wrap:wrap; z-index:2; }
+  .q-steps span{
+    font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:999px;
+    background:rgba(255,255,255,.88); color:#475569; border:1px solid rgba(15,23,42,.08);
+    backdrop-filter:blur(4px); animation:qStep 20s ease-in-out infinite both; animation-delay:calc(var(--i) * 4s);
+  }
+  .q-steps span:nth-child(1){ --i:0; } .q-steps span:nth-child(2){ --i:1; } .q-steps span:nth-child(3){ --i:2; }
+  .q-steps span:nth-child(4){ --i:3; } .q-steps span:nth-child(5){ --i:4; }
+  @keyframes qStep{ 0%{background:rgba(255,255,255,.88); color:#475569;} 3%,20%{background:var(--accent); color:#fff;} 24%,100%{background:rgba(255,255,255,.88); color:#475569;} }
+  .build-card--feature:hover .q-steps span{ animation-play-state:paused; }
+  .build-list{ margin:0 0 13px; padding-left:18px; font-size:13.3px; color:var(--text-2); }
+  .build-list li{ margin:4px 0; }
+  .build-list b{ color:var(--text); font-weight:600; }
+  @media (max-width:760px){
+    .build-card--feature{ grid-template-columns:1fr; }
+    .build-card--feature .build-media{ aspect-ratio:16/11; min-height:0; height:auto; }
+    .q-steps span{ font-size:10.5px; padding:4px 8px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .build-card--feature .build-media img{ animation:none; opacity:0; }
+    .build-card--feature .build-media img:nth-child(1){ opacity:1; }
+    .q-steps span{ animation:none; }
+  }
+
   /* ---------- Testimonials marquee ---------- */
   .marquee{
     overflow:hidden; margin-top:28px;
@@ -733,8 +768,38 @@
     <div class="section-inner reveal">
       <p class="kicker">직접 만든 것들</p>
       <h2 class="sec-title">현업 과제를 직접 구조화해 만들어 본 사이드 프로젝트</h2>
-      <p class="sec-desc">영업·사업관리 실무에서 부딪힌 문제를 AI 도구로 직접 구조화하고 만들어 봤습니다.</p>
+      <p class="sec-desc">영업·사업관리 실무에서 부딪힌 문제를 AI 도구로 직접 구조화하고 만들어 봤습니다. 가장 최근에 만든 견적서 생성기부터 보여드립니다.</p>
       <div class="build-grid">
+        <div class="build-card build-card--feature reveal">
+          <div class="build-media">
+            <img src="assets/build-quote-1.jpg" alt="카카오클라우드 견적서 생성기 — AI가 고객 요청을 분석해 사양을 매칭한 결과 화면(제품명 블러 처리)">
+            <img src="assets/build-quote-2.jpg" alt="부족한 정보와 맞는 사양이 없는 이유를 빨간 안내로 보여 주는 화면">
+            <img src="assets/build-quote-3.jpg" alt="견적서 작성 화면과 월 금액 실시간 합계(제품명 블러 처리)">
+            <img src="assets/build-quote-4.jpg" alt="카카오클라우드와 타사 클라우드 금액 비교 화면(제품명 블러 처리)">
+            <img src="assets/build-quote-5.jpg" alt="견적 이력 저장·불러오기 화면(제품명 블러 처리)">
+            <div class="q-steps" aria-hidden="true">
+              <span>① 요청 분석(AI)</span><span>② 부족한 정보 안내</span><span>③ 견적서 · 월 금액</span><span>④ 타사 비교</span><span>⑤ 이력 관리</span>
+            </div>
+          </div>
+          <div class="build-body">
+            <div class="build-kicker">Side Project &middot; AI 활용 업무 도구</div>
+            <h3>카카오클라우드 견적서 생성기</h3>
+            <p>고객이 보낸 사양 요청을 붙여넣으면 AI(Claude)가 요구사항을 구조화하고, 카카오클라우드 사양 매칭·등급 판정·가격 계산은
+              마스터 데이터 기반 코드가 맡도록 역할을 나눴습니다. 결과는 공식 견적서 엑셀 양식에 그대로 채워 내려받습니다.</p>
+            <ul class="build-list">
+              <li><b>등급 판정</b> &mdash; 정확 / 비슷 / 맞는 사양 없음 / 정보 필요로 나누고, 왜 직접 골라야 하는지 빨간 안내로 표시</li>
+              <li><b>월 금액 합계 · 타사 환산 비교 · 이력 저장·불러오기</b>까지 한 화면에서</li>
+              <li><b>검증</b> &mdash; 영업·타사 클라우드·고객·재무 담당자 역할의 AI 에이전트를 병렬로 돌려 전수 테스트하고 발견된 문제를 반영 (자동 테스트 130건)</li>
+            </ul>
+            <div class="build-tags">
+              <span>Next.js</span>
+              <span>Claude API</span>
+              <span>엑셀 양식 자동 채움</span>
+              <span>역할별 AI 에이전트 QA</span>
+            </div>
+            <span class="build-note">사내 비공개 도구 &middot; 샘플 데이터 화면(제품명은 블러 처리)</span>
+          </div>
+        </div>
         <div class="build-card reveal">
           <div class="build-media">
             <img class="a" src="assets/build-laas-1.jpg" alt="Kakao i LaaS 온보딩 챗봇 서비스 선택 화면">
