@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>최근수 | B2B 제안·계약·사업관리 실무자</title>
+<meta name="description" content="최근수 - 기술 요구사항을 이해하고 제안·입찰·계약·구축 수행관리까지 이어가는 B2B 사업관리 실무자">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f8f6;
+    --surface:#ffffff;
+    --surface-2:#f0f2ee;
+    --border:#e2e5df;
+    --text:#1b1f1c;
+    --text-2:#4d534c;
+    --text-3:#7c837a;
+    --accent:#2454c9;
+    --accent-2:#3b6fe6;
+    --accent-soft:#e9eefc;
+    --amber:#b5750a;
+    --amber-soft:#fbf1de;
+    --shadow: 0 1px 2px rgba(20,30,20,.04), 0 8px 24px -12px rgba(20,30,20,.12);
+    --radius: 16px;
+    --max: 960px;
+    --nav-h: 64px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12140f;
+      --surface:#1a1d17;
+      --surface-2:#20241d;
+      --border:#2c3127;
+      --text:#eef1ea;
+      --text-2:#b7bdb0;
+      --text-3:#83897d;
+      --accent:#7fa4ff;
+      --accent-2:#5c8cff;
+      --accent-soft:#182544;
+      --amber:#e3b256;
+      --amber-soft:#332a15;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -14px rgba(0,0,0,.55);
+    }
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Noto Sans KR", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 20px;}
+  a{color:inherit;}
+  section{scroll-margin-top: calc(var(--nav-h) + 12px);}
+
+  /* ---------- Top nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:100;
+    height:var(--nav-h);
+    display:flex; align-items:center;
+    background:rgba(247,248,246,.7);
+    backdrop-filter:blur(10px) saturate(1.2);
+    -webkit-backdrop-filter:blur(10px) saturate(1.2);
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  @media (prefers-color-scheme: dark){
+    .topnav{ background:rgba(18,20,15,.7); }
+  }
+  .topnav.scrolled{ border-bottom-color:var(--border); }
+  .nav-inner{
+    width:100%; max-width:var(--max); margin:0 auto; padding:0 20px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{
+    font-weight:800; font-size:15.5px; letter-spacing:-.01em;
+    text-decoration:none;
+    display:flex; align-items:center; gap:8px;
+  }
+  .brand::before{
+    content:""; width:8px; height:8px; border-radius:50%;
+    background:var(--accent-2); flex:none;
+  }
+  .nav-menu{
+    list-style:none; display:flex; gap:4px; margin:0; padding:0;
+  }
+  .nav-menu a{
+    display:inline-block;
+    text-decoration:none;
+    font-size:13.8px; font-weight:600;
+    color:var(--text-3);
+    padding:9px 14px;
+    border-radius:8px;
+    transition:color .15s ease, background .15s ease;
+  }
+  .nav-menu a:hover{ color:var(--text); background:var(--surface-2); }
+  .nav-menu a.active{ color:var(--accent); background:var(--accent-soft); }
+  .nav-toggle{
+    display:none;
+    background:none; border:1px solid var(--border); border-radius:8px;
+    width:36px; height:36px; align-items:center; justify-content:center;
+    color:var(--text); cursor:pointer;
+  }
+  @media (max-width:760px){
+    .nav-toggle{display:flex;}
+    .nav-menu{
+      position:fixed; top:var(--nav-h); left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+      padding:8px;
+      transform:translateY(-8px);
+      opacity:0; pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease;
+    }
+    .nav-menu.open{ opacity:1; pointer-events:auto; transform:translateY(0); }
+    .nav-menu a{ padding:12px 14px; border-radius:8px; }
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.in-view{ opacity:1; transform:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:64px 0 48px;
+    display:grid;
+    grid-template-columns: auto 1fr;
+    gap:36px;
+    align-items:center;
+  }
+  .hero-photo{
+    width:132px; height:132px; border-radius:50%;
+    overflow:hidden; flex:none;
+    border:3px solid var(--surface);
+    box-shadow:var(--shadow);
+  }
+  .hero-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:600; letter-spacing:.02em;
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-radius:999px;
+    padding:6px 14px;
+    margin-bottom:18px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-2);}
+  h1{
+    font-size:clamp(26px, 4.2vw, 36px);
+    font-weight:900;
+    letter-spacing:-.02em;
+    margin:0 0 12px;
+  }
+  .hero .role{
+    display:block;
+    font-size:clamp(14.5px, 2vw, 16px);
+    font-weight:600;
+    color:var(--text-2);
+    margin-top:8px;
+    letter-spacing:0;
+  }
+  .lede{
+    font-size:15.5px;
+    color:var(--text-2);
+    max-width:600px;
+    margin:0 0 22px;
+  }
+  .contact-row{ display:flex; flex-wrap:wrap; gap:9px; }
+  .chip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:13px; font-weight:500;
+    color:var(--text-2);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:7px 12px;
+  }
+  .chip svg{width:14px;height:14px;flex:none;opacity:.75;}
+  @media (max-width:640px){
+    .hero{ grid-template-columns:1fr; text-align:center; padding-top:40px; }
+    .hero-photo{ margin:0 auto; }
+    .contact-row{ justify-content:center; }
+  }
+
+  /* ---------- Hero stats ---------- */
+  .stat-row{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:12px; padding:0 0 8px;
+  }
+  @media (max-width:640px){ .stat-row{ grid-template-columns:repeat(2,1fr); } }
+  .stat-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px 16px;
+    text-align:center;
+  }
+  .stat-num{
+    font-family:"JetBrains Mono", monospace;
+    font-size:26px; font-weight:700; color:var(--accent);
+    line-height:1.1;
+  }
+  .stat-label{ font-size:12px; color:var(--text-3); margin-top:6px; }
+
+  /* ---------- Section shell ---------- */
+  .section-inner{padding:56px 0;}
+  section + section .section-inner{border-top:1px solid var(--border);}
+  .kicker{
+    font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 10px;
+  }
+  .sec-title{
+    font-size:clamp(21px,2.8vw,26px);
+    font-weight:800;
+    letter-spacing:-.01em;
+    margin:0 0 12px;
+  }
+  .sec-desc{
+    color:var(--text-2);
+    font-size:14.5px;
+    max-width:600px;
+    margin:0 0 28px;
+  }
+
+  /* ---------- Fit table ---------- */
+  .fit-table{
+    display:flex; flex-direction:column; gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .fit-row{ display:grid; grid-template-columns: 1fr 1fr; background:var(--surface); }
+  .fit-row.head{ background:var(--surface-2); }
+  .fit-row.head .fit-cell{
+    font-size:12px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--text-3); padding:13px 18px;
+  }
+  .fit-cell{ padding:16px 18px; font-size:14px; color:var(--text-2); }
+  .fit-cell.want{ color:var(--text); font-weight:600; border-right:1px solid var(--border); }
+  .fit-cell.have b{color:var(--accent); font-weight:700;}
+  @media (max-width:640px){
+    .fit-row{grid-template-columns:1fr;}
+    .fit-cell.want{border-right:none; border-bottom:1px solid var(--border); padding-bottom:8px;}
+  }
+
+  /* ---------- Highlight / pipeline ---------- */
+  .highlight-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:30px; box-shadow:var(--shadow);
+    margin-top:20px;
+  }
+  .hl-tag{
+    display:inline-block; font-size:11.5px; font-weight:700;
+    color:var(--amber); background:var(--amber-soft);
+    border-radius:999px; padding:5px 12px; margin-bottom:15px;
+  }
+  .hl-title{ font-size:18px; font-weight:800; margin:0 0 8px; }
+  .hl-body{ color:var(--text-2); font-size:14px; margin:0 0 24px; }
+  .pipeline{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .pipe-step{
+    font-size:12.5px; font-weight:600;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:9px; padding:8px 12px; white-space:nowrap;
+  }
+  .pipe-arrow{ color:var(--text-3); font-size:13px; }
+  .hl-foot{
+    margin-top:20px; padding-top:18px; border-top:1px dashed var(--border);
+    font-size:13px; color:var(--text-3);
+  }
+  .hl-foot b{color:var(--text-2);}
+
+  /* ---------- Timeline ---------- */
+  .timeline{ display:flex; flex-direction:column; position:relative; }
+  .tl-item{
+    display:grid; grid-template-columns: 120px 1fr; gap:22px;
+    padding:24px 0; border-top:1px solid var(--border); position:relative;
+  }
+  .tl-item:first-child{border-top:none;}
+  .tl-period{
+    font-family:"JetBrains Mono", monospace; font-size:12px; font-weight:500;
+    color:var(--text-3); padding-top:3px;
+  }
+  .tl-period .current{
+    display:inline-block; margin-top:6px; font-size:10.5px; font-weight:700;
+    color:var(--accent); background:var(--accent-soft); border-radius:6px; padding:2px 7px;
+  }
+  .tl-org{font-size:15.5px; font-weight:700; margin:0 0 2px;}
+  .tl-role{font-size:13px; color:var(--text-3); margin:0 0 11px;}
+  .tl-org-row{display:flex; align-items:flex-start; gap:14px; margin:0 0 6px; flex-wrap:wrap;}
+  .tl-logo-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:52px; max-width:170px; padding:8px 14px;
+    background:#fff; border:1px solid var(--border); border-radius:10px;
+    flex:none;
+  }
+  .tl-logo-badge img{ max-height:100%; max-width:100%; width:auto; height:auto; object-fit:contain; display:block; }
+  .tl-role-title{font-size:15.5px; font-weight:700; color:var(--text); padding-top:3px;}
+  .tl-points{margin:0; padding-left:18px; color:var(--text-2); font-size:13.5px;}
+  .tl-points li{margin:5px 0;}
+  .tl-points b{color:var(--text); font-weight:600;}
+  @media (max-width:640px){ .tl-item{grid-template-columns:1fr; gap:6px;} }
+
+  /* ---------- Project cards ---------- */
+  .grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+  @media (max-width:700px){ .grid{grid-template-columns:1fr;} }
+  .card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
+  .card-tag{
+    font-size:11px; font-weight:700; letter-spacing:.03em;
+    color:var(--accent); text-transform:uppercase; margin-bottom:9px;
+  }
+  .card h3{font-size:15.5px; margin:0 0 7px; font-weight:700;}
+  .card p{font-size:13.3px; color:var(--text-2); margin:0;}
+  .card--wide{ grid-column:1 / -1; }
+  .card-stat{
+    display:inline-block; margin-top:12px; font-size:12.5px; font-weight:600;
+    color:var(--accent); background:var(--accent-soft);
+    border-radius:8px; padding:6px 11px;
+  }
+
+  /* ---------- Builds (side projects) ---------- */
+  .build-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:18px; }
+  @media (max-width:760px){ .build-grid{grid-template-columns:1fr;} }
+  .build-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; overflow:hidden; box-shadow:var(--shadow);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .build-grid .build-card:nth-child(1){ transition-delay:0ms; }
+  .build-grid .build-card:nth-child(2){ transition-delay:110ms; }
+  .build-media{
+    position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--surface-2);
+  }
+  .build-media img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:top;
+    transition:transform .5s ease;
+  }
+  .build-media img.b{ animation: buildCrossB 8s ease-in-out infinite; }
+  .build-media img.a{ animation: buildCrossA 8s ease-in-out infinite; }
+  @keyframes buildCrossA{ 0%,42%{opacity:1;} 54%,100%{opacity:0;} }
+  @keyframes buildCrossB{ 0%,42%{opacity:0;} 54%,100%{opacity:1;} }
+  .build-card:hover .build-media img{ transform:scale(1.045); }
+  @media (prefers-reduced-motion: reduce){
+    .build-media img.a{ animation:none; opacity:1; }
+    .build-media img.b{ animation:none; opacity:0; }
+  }
+  .build-body{ padding:20px 22px 22px; }
+  .build-kicker{
+    font-size:11px; font-weight:700; color:var(--accent);
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;
+  }
+  .build-body h3{ font-size:16px; margin:0 0 8px; font-weight:800; }
+  .build-body p{ font-size:13.3px; color:var(--text-2); margin:0 0 13px; }
+  .build-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:13px; }
+  .build-tags span{
+    font-size:11.3px; font-weight:600; color:var(--text-2);
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:6px; padding:4px 9px;
+  }
+  .build-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:700; color:var(--accent); text-decoration:none;
+  }
+  .build-link svg{ width:12px; height:12px; transition:transform .15s ease; }
+  .build-link:hover svg{ transform:translate(2px,-2px); }
+  .build-note{ font-size:12.5px; font-weight:600; color:var(--text-3); }
+
+  /* ---------- Testimonials marquee ---------- */
+  .marquee{
+    overflow:hidden; margin-top:28px;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .marquee-track{
+    display:flex; gap:14px; width:max-content;
+    animation:buildMarquee 32s linear infinite;
+  }
+  .marquee:hover .marquee-track{ animation-play-state:paused; }
+  @keyframes buildMarquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @media (prefers-reduced-motion: reduce){
+    .marquee-track{ animation:none; overflow-x:auto; }
+  }
+  .quote-card{
+    flex:none; width:290px; margin:0;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:18px 20px;
+  }
+  .quote-card p{ font-size:13px; color:var(--text-2); margin:0 0 12px; line-height:1.6; }
+  .quote-card cite{ font-style:normal; font-size:11.5px; font-weight:700; color:var(--text-3); }
+
+  /* ---------- Skills ---------- */
+  .skill-group{margin-bottom:20px;}
+  .skill-group:last-child{margin-bottom:0;}
+  .skill-label{
+    font-size:12px; font-weight:700; color:var(--text-3);
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px;
+  }
+  .tag-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{
+    font-size:13px; font-weight:500;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:7px 12px;
+  }
+
+  /* ---------- Contact / footer ---------- */
+  .contact-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:44px 32px; text-align:center;
+  }
+  .cta-title{font-size:21px; font-weight:800; margin:0 0 10px;}
+  .cta-desc{color:var(--text-2); font-size:14px; margin:0 0 24px;}
+  .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:14px; font-weight:700; border-radius:10px; padding:12px 20px;
+    text-decoration:none;
+  }
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-ghost{background:var(--surface-2); color:var(--text); border:1px solid var(--border);}
+  footer{ padding:32px 0 56px; text-align:center; }
+  .foot-note{font-size:12px; color:var(--text-3);}
+
+  /* back to top */
+  .to-top{
+    position:fixed; right:20px; bottom:20px; z-index:90;
+    width:42px; height:42px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow); text-decoration:none; color:var(--text-2);
+    opacity:0; pointer-events:none; transform:translateY(8px);
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .to-top.show{ opacity:1; pointer-events:auto; transform:none; }
+</style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="#home" class="brand">최근수</a>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#home" data-nav>Home</a></li>
+      <li><a href="#about" data-nav>About</a></li>
+      <li><a href="#fit" data-nav>Strengths</a></li>
+      <li><a href="#career" data-nav>Career</a></li>
+      <li><a href="#projects" data-nav>Projects</a></li>
+      <li><a href="#builds" data-nav>Builds</a></li>
+      <li><a href="#skills" data-nav>Skills</a></li>
+      <li><a href="#contact" data-nav>Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section id="home">
+    <div class="hero reveal">
+      <div class="hero-photo"><img src="assets/profile.jpg" alt="최근수 프로필 사진"></div>
+      <div>
+        <span class="eyebrow"><span class="dot"></span>B2B 제안 · 계약 · 사업관리</span>
+        <h1>기술 요구사항을 이해하고, 제안·입찰·계약·수행까지 이어가는 사람입니다
+          <span class="role">최근수 · 11년간 4개 도메인(자동화 부품·SI·플랫폼·클라우드)에서 B2B 사업을 수주하고 수행해 온 실무자</span>
+        </h1>
+        <p class="lede">
+          고객의 기술·보안 요건을 확인해 사내 기술조직·파트너와 솔루션을 구성하고, 제안서·견적·입찰·계약,
+          구축 수행관리와 이슈 대응까지 한 흐름으로 이어가는 방식으로 일해 왔습니다.
+          도메인이 바뀔 때마다 새 기술과 고객을 빠르게 익혀 왔습니다.
+        </p>
+        <div class="contact-row">
+          <span class="chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6l10 7L22 6" /><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+            chlrmstn4@naver.com
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.78.6 2.63a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.45-1.17a2 2 0 0 1 2.11-.45c.85.28 1.73.48 2.63.6A2 2 0 0 1 22 16.92z"/></svg>
+            010-2999-0715
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            카카오엔터프라이즈 엔터프라이즈사업팀 · 재직중
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row reveal">
+      <div class="stat-card">
+        <div class="stat-num"><span data-count="11">0</span>년차</div>
+        <div class="stat-label">B2B 기술영업·사업관리 경력</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num"><span data-count="80">0</span>+</div>
+        <div class="stat-label">수주·도입 프로젝트</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num"><span data-count="3">0</span>회</div>
+        <div class="stat-label">전사 최우수 인사평가</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num"><span data-count="4">0</span>개</div>
+        <div class="stat-label">경험한 도메인(부품·SI·플랫폼·클라우드)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about">
+    <div class="section-inner reveal">
+      <p class="kicker">About</p>
+      <h2 class="sec-title">기술을 이해하는 영업, 계약과 수행까지 책임지는 사업관리</h2>
+      <p class="sec-desc" style="margin-bottom:0; max-width:100%;">
+        삼익THK에서 자동화 부품 기술영업으로 시작해, 한국네트웍스에서 SCM 솔루션 SI 입찰·제안·수주를,
+        롯데정보통신에서 IT 서비스 영업을 거쳐, 현재 카카오엔터프라이즈에서 물류 SaaS 영업·PMO와 클라우드 영업을 맡고 있습니다.
+        어느 곳에서든 <b style="color:var(--text)">고객 기술 요건 파악 &rarr; 파트너·사내 기술조직과 솔루션 구성 &rarr; 제안서·견적·입찰 &rarr; 계약 &rarr; 구축 수행관리</b>를
+        직접 이어서 해 왔다는 점이 가장 큰 공통점입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ FIT ============ -->
+  <section id="fit">
+    <div class="section-inner reveal">
+      <p class="kicker">Strengths</p>
+      <h2 class="sec-title">핵심 강점</h2>
+      <p class="sec-desc">제안과 계약, 수행 관리와 데이터까지 &mdash; 사업이 성사되고 끝나는 전 과정에서 쌓은 실행력입니다.</p>
+      <div class="fit-table">
+        <div class="fit-row head">
+          <div class="fit-cell">역량</div>
+          <div class="fit-cell">실제 수행 경험</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">제안·입찰 대응</div>
+          <div class="fit-cell have">RFP 분석·입찰 평가항목 기반 맞춤 제안, 컨소시엄·파트너 협업 &mdash; 고도화·유지보수 포함 <b>65개 프로젝트 수주</b></div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">계약 구조 설계·운영</div>
+          <div class="fit-cell have">초기 구축비를 <b>월 사용료로 전환</b>, 물동량 연동 사용료, 연간 M/M 차감 유지보수 등 예산·범위에 맞춘 계약 모델 설계</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">기술·보안 요건 파악과 솔루션 구성</div>
+          <div class="fit-cell have">금융권 GPU 클라우드(Hybrid GPUaaS) 제안에 <b>지원 역할</b>로 참여 &mdash; 기술·보안 요건과 사내 기술조직·파트너 구성안 검토 과정을 함께 경험</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">사업 수행 관리(PMO/PL)</div>
+          <div class="fit-cell have">11개 센터 순차 오픈 PMO 등 <b>일정·이슈·테스트 관리</b>, 오픈 완료 보고, 운영 유지보수 채널 담당</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">영업 현황·파이프라인 관리</div>
+          <div class="fit-cell have">약 300개 화주 상담, 약 150개사 온보딩을 <b>단계별(계약→요건→셋업→교육→오픈→안정화)</b>로 관리</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">데이터 기반 관리·개선</div>
+          <div class="fit-cell have">물동량 raw 데이터와 약 550건 VOC 분석 &mdash; <b>업체당 문의 17%↓·오류 25%↓</b>(2026년 상반기)</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">이해관계자 조율·외부 소통</div>
+          <div class="fit-cell have">고객·파트너·사내 기술조직·개발·유관부서 사이에서 <b>우선순위와 일정을 조율</b>하는 커뮤니케이션 허브 역할</div>
+        </div>
+        <div class="fit-row">
+          <div class="fit-cell want">새로운 분야에 대한 빠른 적응</div>
+          <div class="fit-cell have">자동화 부품 &rarr; SCM SI &rarr; 플랫폼 &rarr; 클라우드로 <b>도메인을 바꿔 가며</b> 매번 새 기술·고객·계약 구조를 익혀 성과로 연결</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <span class="hl-tag">END-TO-END</span>
+        <p class="hl-title">요건 확인부터 계약, 구축 수행관리까지 &mdash; 한 흐름으로 이어간 방식</p>
+        <p class="hl-body">
+          한국네트웍스의 대기업 SI 수주와 카카오엔터프라이즈의 B2B 프로젝트에서 같은 흐름으로 일했습니다.
+          고객 요건을 정리해 파트너·기술조직과 구성안을 만들고, 제안·견적·입찰과 계약 구조까지 설계한 뒤,
+          구축 단계에서는 PMO로 일정과 이슈를 끝까지 관리했습니다.
+        </p>
+        <div class="pipeline">
+          <span class="pipe-step">기술·보안 요건 확인</span><span class="pipe-arrow">&rarr;</span>
+          <span class="pipe-step">파트너·기술조직과 솔루션 구성</span><span class="pipe-arrow">&rarr;</span>
+          <span class="pipe-step">제안서·견적</span><span class="pipe-arrow">&rarr;</span>
+          <span class="pipe-step">입찰</span><span class="pipe-arrow">&rarr;</span>
+          <span class="pipe-step">계약 구조 설계</span><span class="pipe-arrow">&rarr;</span>
+          <span class="pipe-step">구축 수행관리(PMO)</span><span class="pipe-arrow">&rarr;</span>
+          <span class="pipe-step">오픈·안정화</span>
+        </div>
+        <div class="hl-foot">
+          <b>이슈 대응 방식 &mdash;</b> 시스템 장애(예: 중복 출고) 접수 시 DB 쿼리로 원인 데이터를 직접 특정하고,
+          개발팀에는 수정이 필요한 데이터와 재현 시나리오를 정확히 전달해 해결 속도를 단축시켰습니다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CAREER ============ -->
+  <section id="career">
+    <div class="section-inner reveal">
+      <p class="kicker">경력</p>
+      <h2 class="sec-title">Career Timeline</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-period">2022.04 &ndash;<br>재직중<br><span class="current">CURRENT</span></div>
+          <div>
+            <div class="tl-org-row">
+              <span class="tl-logo-badge"><img src="assets/logos/kakao.png" alt="카카오엔터프라이즈 로고"></span>
+              <span class="tl-role-title">엔터프라이즈사업팀(前 LaaS 사업팀) 매니저</span>
+            </div>
+            <p class="tl-role">클라우드·물류 SaaS 영업, 제안 지원, PMO</p>
+            <ul class="tl-points">
+              <li><b>클라우드 영업</b> 영역 확장 &mdash; 금융권 GPU 클라우드(Hybrid GPUaaS) 제안에 <b>지원 역할</b>로 참여</li>
+              <li>오리온·푸디스트·삼성웰스토리·스가츠네코리아·다코넷 등 <b>수주 및 도입 PM/PMO</b> 수행</li>
+              <li>푸디스트: 초기 구축비 부담을 <b>월 사용료로 전환</b>, 삼성웰스토리 베트남: 물동량 연동 사용료 제안</li>
+              <li>삼성웰스토리 통합 물류시스템 <b>11개 센터 순차 오픈</b>, 베트남 법인 확산 PMO 진행 중</li>
+              <li>화주사·회원사 온보딩 영업 &mdash; 물성·물동량 데이터 분석 기반 운영 매칭 22건 성사</li>
+              <li>2022년 인사평가 전사 최우수(Su) 등급, 2024년 매출 목표 150.1% 달성</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">2021.10 &ndash;<br>2022.03</div>
+          <div>
+            <div class="tl-org-row">
+              <span class="tl-logo-badge"><img src="assets/logos/lotte.png" alt="롯데정보통신 로고"></span>
+              <span class="tl-role-title">유통서비스영업팀 선임</span>
+            </div>
+            <p class="tl-role">IT 서비스 영업 및 제안</p>
+            <ul class="tl-points">
+              <li>연간 유지보수 계약 진행과 파트너사 관리, 차량 적재율 측정 비전 시스템 제안 및 POC</li>
+              <li>통합 IT 운영 유지보수 제안 TF 참여, 택배관리시스템 영업 제안</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">2019.10 &ndash;<br>2021.10</div>
+          <div>
+            <div class="tl-org-row">
+              <span class="tl-logo-badge"><img src="assets/logos/knetworks.jpg" alt="한국네트웍스 로고"></span>
+              <span class="tl-role-title">SCM솔루션영업팀 선임</span>
+            </div>
+            <p class="tl-role">SCM 솔루션 SI 입찰·제안·수주 (한국타이어 IT 계열사)</p>
+            <ul class="tl-points">
+              <li>고객 기술 요건 파악 &rarr; 파트너 솔루션 구성 &rarr; 제안서·견적 &rarr; 입찰 &rarr; 계약 &rarr; 구축 수행관리까지 <b>전 과정 수행</b></li>
+              <li>2019.10&ndash;2021 상반기 고도화·유지보수 포함 <b>65개 프로젝트 수주·진행</b>, 대기업 고객 관리</li>
+              <li>예산 편성 단계부터 영업하고 RFP 작성 가이드 지원, 평가항목 정보 기반 맞춤 제안, 기존 운영사와 컨소시엄 구성</li>
+              <li>대표 수주: 현대글로비스 통합 운송·물류시스템(당시 역대 최고액), 삼성물산 풀필먼트, 대상+베스트코 통합 시스템 등</li>
+              <li>2020년 매출 목표 121% 달성, 인사평가 S등급</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">2015.07 &ndash;<br>2019.10</div>
+          <div>
+            <div class="tl-org-row">
+              <span class="tl-logo-badge"><img src="assets/logos/samick.png" alt="삼익THK 로고"></span>
+              <span class="tl-role-title">영업/마케팅팀 계장</span>
+            </div>
+            <p class="tl-role">자동화 부품 기술영업 및 B2B 마케팅</p>
+            <ul class="tl-points">
+              <li>삼성디스플레이·삼성SDI 등 약 50개 거래처 기술영업, 2017년 매출 목표 150% 달성, 인사평가 S등급</li>
+              <li>마케팅팀: 중국 FPD 프로젝트 관리, 해외 신규 상품 발굴·벤더 계약</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects">
+    <div class="section-inner reveal">
+      <p class="kicker">대표 프로젝트</p>
+      <h2 class="sec-title">제안과 계약에서 수행까지</h2>
+      <div class="grid">
+        <div class="card card--wide">
+          <div class="card-tag">입찰·제안 대응 · 2019&ndash;2021</div>
+          <h3>대기업 SI 입찰·제안 &mdash; 65개 프로젝트 수주</h3>
+          <p>예산 편성 단계부터 영업해 RFP 작성 가이드를 지원하고, 입찰 평가항목 정보에 맞춘 제안서를 작성·발표했습니다.
+            일정 준수가 관건이던 건에서는 기존 운영사와 컨소시엄을 구성했고, 컨설팅사와 협업해 Top Level 영업과 연계하거나
+            1차 성과를 바탕으로 수의계약 전환까지 이끌었습니다.</p>
+          <span class="card-stat">현대글로비스 통합 운송·물류시스템 &mdash; 당시 역대 최고액 수주</span>
+        </div>
+        <div class="card">
+          <div class="card-tag">계약 구조 설계</div>
+          <h3>고객 예산에 맞춘 계약 모델</h3>
+          <p>초기 구축비 부담에 맞춰 Customizing을 줄이고 구축비를 월 사용료로 전환(푸디스트), 물동량 연동 Sliding 월 사용료(삼성웰스토리 베트남), 연간 M/M 차감 방식 유지보수 모델을 제안했습니다.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">PMO · 2023.10&ndash;2024.04</div>
+          <h3>삼성웰스토리 통합 물류시스템</h3>
+          <p>2차 통합테스트부터 PMO로 투입되어 테스트 오류·개선 이슈를 관리하고, 11개 센터를 순차 오픈했습니다. 오픈 완료 보고와 운영 유지보수 채널까지 담당.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">PMO · PL · 2022&ndash;2023</div>
+          <h3>푸디스트 · 다코넷 도입</h3>
+          <p>푸디스트 온라인 전용창고는 테스트 시나리오·교육·오픈 대응을, 다코넷은 As-Is 분석과 To-Be 도출부터 개발 Follow-up, 오픈·안정화까지 PL로 리드했습니다.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">PMO · 2024.10&ndash;진행중</div>
+          <h3>삼성웰스토리 베트남 법인 확산</h3>
+          <p>현지 요건 정립과 GAP 분석, 개발 범위 조정, 일정·개발 진척률 관리.</p>
+        </div>
+        <div class="card card--wide">
+          <div class="card-tag">Data-driven Ops · 2025&ndash;현재</div>
+          <h3>영업·온보딩 현황 관리와 데이터 기반 개선</h3>
+          <p>약 300개 화주사 상담과 약 150개사 온보딩을 단계별로 관리하고, 공식 집계를 시작한 2025년부터 약 550건의 운영 대응 데이터를
+            분석해 개선 과제를 도출·기획하고 개발·테스트·배포까지 리드했습니다.</p>
+          <span class="card-stat">업체당 문의 17%↓ · 업체당 오류 25%↓ (2026년 상반기 기준)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUILDS ============ -->
+  <section id="builds">
+    <div class="section-inner reveal">
+      <p class="kicker">직접 만든 것들</p>
+      <h2 class="sec-title">현업 과제를 직접 구조화해 만들어 본 사이드 프로젝트</h2>
+      <p class="sec-desc">영업·사업관리 실무에서 부딪힌 문제를 AI 도구로 직접 구조화하고 만들어 봤습니다.</p>
+      <div class="build-grid">
+        <div class="build-card reveal">
+          <div class="build-media">
+            <img class="a" src="assets/build-laas-1.jpg" alt="Kakao i LaaS 온보딩 챗봇 서비스 선택 화면">
+            <img class="b" src="assets/build-laas-2.jpg" alt="Kakao i LaaS 온보딩 챗봇 신규 셋업 시나리오 화면">
+          </div>
+          <div class="build-body">
+            <div class="build-kicker">Side Project · AI 챗봇</div>
+            <h3>Kakao i LaaS 온보딩 AI 챗봇</h3>
+            <p>Gemini 2.5 기반 상담 챗봇을 직접 기획·개발했습니다. OM·WM·창고매칭 서비스별로 분기하고,
+              신규 셋업 시 화주사/회원사 유형부터 순서대로 안내하는 온보딩 시나리오를 설계했습니다.
+              고객사별 FAQ는 스프레드시트와 연동해 실시간으로 반영됩니다.</p>
+            <div class="build-tags">
+              <span>Gemini 2.5</span>
+              <span>온보딩 시나리오 설계</span>
+              <span>동적 FAQ 연동</span>
+            </div>
+            <a class="build-link" href="https://chlrmstn4-afk.github.io/kakaoilaas/" target="_blank" rel="noopener">
+              직접 사용해보기
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="build-card reveal">
+          <div class="build-media">
+            <img class="a" src="assets/build-matching-agents.png" alt="화주-물류사 매칭 플랫폼 개발에 사용한 AI 에이전트 구성도">
+            <img class="b" src="assets/build-matching-pipeline.png" alt="화주-물류사 매칭 플랫폼 개발 파이프라인 단계도">
+          </div>
+          <div class="build-body">
+            <div class="build-kicker">Side Project · AI 에이전트 개발</div>
+            <h3>화주–물류사 매칭 플랫폼 2.0</h3>
+            <p>화주사와 물류사가 직접 견적을 주고받는 B2B 매칭 플랫폼을 Next.js·Prisma로 개발했습니다.
+              기획, 구현, 디자인/문구 검수, 물류 실무 검증, 보안·컴플라이언스 검토까지
+              역할을 나눈 AI 에이전트 파이프라인으로 구조화해 개발 품질을 관리했습니다.</p>
+            <div class="build-tags">
+              <span>Next.js · Prisma</span>
+              <span>AI 에이전트 오케스트레이션</span>
+              <span>자동 테스트 390+건</span>
+            </div>
+            <span class="build-note">사내 비공개 프로젝트 · 개발 과정 구조도</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="kicker" style="margin-top:40px;">동료 피드백</p>
+      <div class="marquee">
+        <div class="marquee-track">
+          <blockquote class="quote-card">
+            <p>&ldquo;문제를 해결하기 위해 어떤 부분을 개선해야 하는지 잘 알고 있습니다. 새로운 프로세스를 익히기 위해 적극적으로 노력합니다.&rdquo;</p>
+            <cite>동료 피드백 (비공개)</cite>
+          </blockquote>
+          <blockquote class="quote-card">
+            <p>&ldquo;고객 지향적인 product를 만들기 위해 항상 고민하고 의견을 개진하며, 타 팀과 협업하고자 하는 태도가 우수합니다.&rdquo;</p>
+            <cite>동료 피드백 (비공개)</cite>
+          </blockquote>
+          <blockquote class="quote-card">
+            <p>&ldquo;올 한해 가장 많은 고객사와 다양한 비즈니스 기회를 만드는 데 노력했고, 사업의 중요한 분야인 매칭을 이끌어냈습니다.&rdquo;</p>
+            <cite>동료 피드백 (비공개)</cite>
+          </blockquote>
+          <blockquote class="quote-card">
+            <p>&ldquo;문제를 해결하기 위해 어떤 부분을 개선해야 하는지 잘 알고 있습니다. 새로운 프로세스를 익히기 위해 적극적으로 노력합니다.&rdquo;</p>
+            <cite>동료 피드백 (비공개)</cite>
+          </blockquote>
+          <blockquote class="quote-card">
+            <p>&ldquo;고객 지향적인 product를 만들기 위해 항상 고민하고 의견을 개진하며, 타 팀과 협업하고자 하는 태도가 우수합니다.&rdquo;</p>
+            <cite>동료 피드백 (비공개)</cite>
+          </blockquote>
+          <blockquote class="quote-card">
+            <p>&ldquo;올 한해 가장 많은 고객사와 다양한 비즈니스 기회를 만드는 데 노력했고, 사업의 중요한 분야인 매칭을 이끌어냈습니다.&rdquo;</p>
+            <cite>동료 피드백 (비공개)</cite>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section id="skills">
+    <div class="section-inner reveal">
+      <p class="kicker">핵심 역량</p>
+      <h2 class="sec-title">Skills</h2>
+      <div class="skill-group">
+        <div class="skill-label">제안 &amp; 계약</div>
+        <div class="tag-row">
+          <span class="tag">RFP 분석 &amp; 맞춤 제안서</span>
+          <span class="tag">견적 &amp; 입찰 대응</span>
+          <span class="tag">계약 구조 설계</span>
+          <span class="tag">컨소시엄·파트너 협업</span>
+          <span class="tag">기술·보안 요건 정리</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-label">사업 수행 &amp; 관리</div>
+        <div class="tag-row">
+          <span class="tag">PMO &amp; 프로젝트 관리</span>
+          <span class="tag">일정·이슈 관리</span>
+          <span class="tag">우선순위 조율</span>
+          <span class="tag">영업 파이프라인 관리</span>
+          <span class="tag">오픈 보고 &amp; 사용자 교육</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-label">데이터 &amp; 소통</div>
+        <div class="tag-row">
+          <span class="tag">물동량·VOC 데이터 분석</span>
+          <span class="tag">DB Query 기반 이슈 분석</span>
+          <span class="tag">B2B 기술영업 11년</span>
+          <span class="tag">고객·파트너·개발팀 커뮤니케이션</span>
+          <span class="tag">새로운 분야 빠른 학습</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <div class="section-inner reveal">
+      <div class="contact-card">
+        <p class="cta-title">기술 요구사항을 사업으로 연결하는 일, 더 자세히 이야기 나누고 싶습니다</p>
+        <p class="cta-desc">제안·입찰·계약·수행관리 경험에 대해<br>
+          궁금하신 점이 있다면 편하게 연락 주세요.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="mailto:chlrmstn4@naver.com">이메일 보내기</a>
+          <a class="btn btn-ghost" href="tel:010-2999-0715">전화 연결</a>
+          <a class="btn btn-ghost" href="https://app.notion.com/p/_-2be0f345b8d780c69e28d84e07d7dc8c?source=copy_link" target="_blank" rel="noopener">포트폴리오 더 보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p class="foot-note">최근수 · B2B 제안·계약·사업관리 소개 페이지</p>
+</footer>
+
+<a href="#home" class="to-top" id="toTop" aria-label="맨 위로">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</a>
+
+<script>
+(function(){
+  var nav = document.getElementById('topnav');
+  var toggle = document.getElementById('navToggle');
+  var menu = document.getElementById('navMenu');
+  var toTop = document.getElementById('toTop');
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+  var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll-based nav background + back-to-top
+  window.addEventListener('scroll', function(){
+    var y = window.scrollY || document.documentElement.scrollTop;
+    nav.classList.toggle('scrolled', y > 8);
+    toTop.classList.toggle('show', y > 480);
+  }, { passive:true });
+
+  // Mobile menu toggle
+  toggle.addEventListener('click', function(){
+    var open = menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navLinks.forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); });
+  });
+
+  // Active section highlighting
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var idx = sections.indexOf(entry.target);
+        if (idx === -1) return;
+        if (entry.isIntersecting){
+          navLinks.forEach(function(a){ a.classList.remove('active'); });
+          navLinks[idx].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    sections.forEach(function(s){ if (s) io.observe(s); });
+
+    // Reveal on scroll
+    var rio = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          rio.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function(el){ rio.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Count-up stats
+  function animateCount(el){
+    var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+    if (reduced){ el.textContent = target; return; }
+    var start = null, duration = 900;
+    function step(ts){
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var counters = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window && counters.length){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          animateCount(entry.target);
+          cio.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    counters.forEach(function(c){ cio.observe(c); });
+  } else {
+    counters.forEach(function(c){ c.textContent = c.getAttribute('data-count'); });
+  }
+})();
+</script>
+
+</body>
+</html>
