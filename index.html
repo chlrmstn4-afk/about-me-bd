@@ -386,8 +386,8 @@
 
   /* ---------- Feature build card (multi-frame crossfade) ---------- */
   .build-card--feature{ grid-column:1 / -1; display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); }
-  .build-card--feature .build-media{ aspect-ratio:auto; min-width:0; min-height:380px; height:100%; background:#0f172a0d; }  /* 비율 고정 + height:100%는 가로가 늘어나 옆 글자를 가리므로 쓰지 않는다 */
-  .build-card--feature .build-media img{ object-position:top left; animation:qFade 20s ease-in-out infinite both; animation-delay:calc(var(--i) * 4s); }
+  .build-card--feature .build-media{ aspect-ratio:auto; min-width:0; min-height:380px; height:100%; background:var(--surface-2); }  /* 비율 고정 + height:100%는 가로가 늘어나 옆 글자를 가리므로 쓰지 않는다 */
+  .build-card--feature .build-media img{ object-fit:contain; object-position:top center; background:var(--surface-2); animation:qFade 20s ease-in-out infinite both; animation-delay:calc(var(--i) * 4s); }
   .build-card--feature .build-media img:nth-child(1){ --i:0; }
   .build-card--feature .build-media img:nth-child(2){ --i:1; }
   .build-card--feature .build-media img:nth-child(3){ --i:2; }
